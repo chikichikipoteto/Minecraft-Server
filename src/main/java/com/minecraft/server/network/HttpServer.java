@@ -114,6 +114,57 @@ public class HttpServer {
     }
     
     /**
+     * スタンドアロン実行用のメインメソッド
+     */
+    public static void main(String[] args) {
+        try {
+            // ダミーのMinecraftServerインスタンスを作成
+            MinecraftServer dummyServer = new MinecraftServer() {
+                @Override
+                public String getVersion() {
+                    return "1.0.0";
+                }
+                
+                @Override
+                public com.minecraft.server.player.PlayerManager getPlayerManager() {
+                    return new com.minecraft.server.player.PlayerManager() {
+                        @Override
+                        public int getOnlinePlayerCount() {
+                            return 0;
+                        }
+                    };
+                }
+                
+                @Override
+                public com.minecraft.server.config.ServerConfig getConfig() {
+                    return new com.minecraft.server.config.ServerConfig() {
+                        @Override
+                        public int getMaxPlayers() {
+                            return 20;
+                        }
+                        
+                        @Override
+                        public String getMotd() {
+                            return "Minecraft Server on Render";
+                        }
+                    };
+                }
+            };
+            
+            HttpServer httpServer = new HttpServer(dummyServer);
+            httpServer.start();
+            
+            // サーバーを継続実行
+            while (httpServer.isRunning()) {
+                Thread.sleep(1000);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
      * HTTPリクエストハンドラー
      */
     private static class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
