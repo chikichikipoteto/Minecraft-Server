@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: minecraft-server
+    env: java
+    buildCommand: ./gradlew build
+    startCommand: java -jar build/libs/minecraft-server-1.0.0.jar
+    envVars:
+      - key: JAVA_VERSION
+        value: 17
+      - key: SERVER_PORT
+        value: 25565
+      - key: MAX_PLAYERS
+        value: 20
+      - key: ONLINE_MODE
+        value: false
+      - key: MOTD
+        value: "Minecraft Server on Render"
+    healthCheckPath: /
+    autoDeploy: true
+    plan: starter 
